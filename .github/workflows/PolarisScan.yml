@@ -69,13 +69,13 @@ jobs:
         run: |
           curl -fLsS -o bridge.zip ${{ vars.BRIDGECLI_LINUX64 }} && unzip -qo -d ${{ runner.temp }} bridge.zip && rm -f bridge.zip
           ${{ runner.temp }}/bridge-cli-bundle-linux64/bridge-cli --stage polaris \
-            polaris.serverUrl=${{ vars.POLARIS_SERVERURL }} \
-            polaris.accessToken=${{ secrets.POLARIS_ACCESSTOKEN }} \
-            polaris.application.name="Whats New In Polaris" \
-            polaris.project.name=${{ github.event.repository.name }} \
-            polaris.branch.name=${{ github.branch.name }} \
-            polaris.assessment.types="SCA,SAST" \
-            polaris.test.sast.type="SAST-RAPID"
+          polaris.serverUrl=${{ vars.POLARIS_SERVERURL }} \
+          polaris.accessToken=${{ secrets.POLARIS_ACCESSTOKEN }} \
+          polaris.application.name="Whats New In Polaris" \
+          polaris.project.name=${{ github.event.repository.name }} \
+          polaris.branch.name=${{ github.branch.name }} \
+          polaris.assessment.types="SCA,SAST" \
+          polaris.test.sast.type="SAST-RAPID"
         #    polaris.branch.parent.name=${{ github.event.base_ref }}
        # github.repository.pull.number=${{ github.event.number }}
         
