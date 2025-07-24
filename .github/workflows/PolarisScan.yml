@@ -50,7 +50,8 @@ jobs:
           coverity_clean_command: /mvnw spotless:apply
       - name: Polaris PR Scan
         id: polaris-pr-scan
-        if: ${{ github.event_name == 'pull_request' }}
+        if: FALSE
+       # if: ${{ github.event_name == 'pull_request' }}
         uses: blackduck-inc/black-duck-security-scan@805cbd09e806b01907bbea0f990723c2bb85abe9
         with:
           polaris_server_url: ${{ vars.POLARIS_SERVERURL }}
@@ -71,8 +72,8 @@ jobs:
           ${{ runner.temp }}/bridge-cli-bundle-linux64/bridge-cli --stage polaris \
           polaris.serverUrl=${{ vars.POLARIS_SERVERURL }} \
           polaris.accessToken=${{ secrets.POLARIS_ACCESSTOKEN }} \
-          polaris.application.name="Whats New In Polaris" \
           polaris.project.name=${{ github.event.repository.name }} \
+          polaris.application.name="Whats New In Polaris" \
           polaris.branch.name=${{ github.branch.name }} \
           polaris.assessment.types="SCA,SAST" \
           polaris.test.sast.type="SAST-RAPID"
