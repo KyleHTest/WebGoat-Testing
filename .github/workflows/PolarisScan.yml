@@ -76,6 +76,3 @@ jobs:
           polaris.branch.name=${{ github.branch.name }} \
           polaris.assessment.types="SCA,SAST" \
           polaris.test.sast.type="SAST-RAPID"
-        #    polaris.branch.parent.name=${{ github.event.base_ref }}
-       # github.repository.pull.number=${{ github.event.number }}
-        
