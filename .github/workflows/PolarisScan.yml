@@ -50,7 +50,7 @@ jobs:
           coverity_clean_command: /mvnw spotless:apply
       - name: Polaris PR Scan
         id: polaris-pr-scan
-        if: ${{ github.event_name == 'pull_requestFALSE' }}
+        if: ${{ github.event_name == 'pull_request' }}
         uses: blackduck-inc/black-duck-security-scan@805cbd09e806b01907bbea0f990723c2bb85abe9
         with:
           polaris_server_url: ${{ vars.POLARIS_SERVERURL }}
