@@ -1,0 +1,81 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+# Black Duck Security Action allows you to integrate Static Analysis Security Testing (SAST) and Software Composition Analysis (SCA) into your CI/CD pipelines.
+# For more information about configuring your workflow,
+# read our documentation at https://github.com/blackduck-inc/black-duck-security-scan
+
+name: CI Black Duck security scan
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: [ "main", "dvelop"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      security-events: write
+      actions: read
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+            distribution: 'temurin'
+            java-version: '23'
+      - name: Full Polaris Scan
+        uses: blackduck-inc/black-duck-security-scan@805cbd09e806b01907bbea0f990723c2bb85abe9
+        if: ${{ github.event_name != 'pull_request' }}
+        with:
+          polaris_server_url: ${{ vars.POLARIS_SERVERURL }}
+          polaris_access_token: ${{ secrets.POLARIS_ACCESSTOKEN }}
+          polaris_assessment_types: "SCA,SAST"
+          polaris_application_name: "Whats New In Polaris"
+          polaris_project_name: ${{ github.event.repository.name }}
+          polaris_branch_name: ${{ github.branch.name }}
+          polaris_test_sca_type: "SCA-PACKAGE,SCA-SIGNATURE"
+          detect_search_depth: 2
+          detect_args: '--detect.diagnostic=true'
+          coverity_build_command: ./mvnw install -DskipTests
+          coverity_clean_command: /mvnw spotless:apply
+      - name: Polaris PR Scan
+        id: polaris-pr-scan
+        if: ${{ github.event_name == 'pull_requestFALSE' }}
+        uses: blackduck-inc/black-duck-security-scan@805cbd09e806b01907bbea0f990723c2bb85abe9
+        with:
+          polaris_server_url: ${{ vars.POLARIS_SERVERURL }}
+          polaris_access_token: ${{ secrets.POLARIS_ACCESSTOKEN }}
+          polaris_application_name: "Whats New In Polaris"
+          polaris_project_name: ${{ github.event.repository.name }}
+          polaris_branch_name: ${{ github.branch.name }}
+          polaris_assessment_types: "SCA,SAST"
+          polaris_prComment_enabled: true
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          coverity_build_command: ./mvnw install -DskipTests
+          coverity_clean_command: /mvnw spotless:apply
+      - name: Polaris PR Scan
+        id: polaris-pr-rapid-Scan
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          curl -fLsS -o bridge.zip ${{ vars.BRIDGECLI_LINUX64 }} && unzip -qo -d ${{ runner.temp }} bridge.zip && rm -f bridge.zip
+          ${{ runner.temp }}/bridge-cli-bundle-linux64/bridge-cli --stage polaris \
+          polaris.serverUrl=${{ vars.POLARIS_SERVERURL }} \
+          polaris.accessToken=${{ secrets.POLARIS_ACCESSTOKEN }} \
+          polaris.project.name=${{ github.event.repository.name }} \
+          polaris.application.name="Whats New In Polaris" \
+          polaris.branch.name=${{ github.branch.name }} \
+          polaris.assessment.types="SCA,SAST" \
+          polaris.test.sast.type="SAST-RAPID"
+        #    polaris.branch.parent.name=${{ github.event.base_ref }}
+       # github.repository.pull.number=${{ github.event.number }}
+        
