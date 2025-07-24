@@ -11,10 +11,10 @@ name: CI Black Duck security scan
 
 on:
   push:
-    branches: [ "main", "dvelop", "PolarisTest"]
+    branches: [ "main", "dvelop", "PolarisTest", "Polaris-PR-Testing"]
   pull_request:
     # The branches below must be a subset of the branches above
-    branches: [ "main", "dvelop", "PolarisTest"]
+    branches: [ "main", "dvelop", "PolarisTest", "Polaris-PR-Testing"]
   workflow_dispatch:
 
 jobs:
