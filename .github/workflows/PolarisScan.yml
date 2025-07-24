@@ -11,10 +11,10 @@ name: CI Black Duck security scan
 
 on:
   push:
-    branches: [ "main", "dvelop", "PolarisTest"]
+    branches: [ "main", "dvelop", "PolarisTest", "Polaris-PR-Testing"]
   pull_request:
     # The branches below must be a subset of the branches above
-    branches: [ "main", "dvelop", "PolarisTest"]
+    branches: [ "main", "dvelop", "PolarisTest", "Polaris-PR-Testing"]
   workflow_dispatch:
 
 jobs:
@@ -60,6 +60,7 @@ jobs:
           polaris_branch_name: ${{ github.branch.name }}
           polaris_assessment_types: "SCA,SAST"
           polaris_prComment_enabled: true
+          polaris_branch_parent_name: "main"
           github_token: ${{ secrets.GITHUB_TOKEN }}
           coverity_build_command: ./mvnw install -DskipTests
           coverity_clean_command: /mvnw spotless:apply
